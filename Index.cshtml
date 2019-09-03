@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Interview.Model.CharModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<style>
+    a {
+        text-decoration: none;
+        display: inline-block;
+        padding: 8px 16px;
+    }
+
+        a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+    .previous {
+        background-color: #f1f1f1;
+        color: black;
+    }
+
+    .next {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .round {
+        border-radius: 50%;
+    }
+</style>
+<div class="row">
+
+
+    <div class="col-md-8">
+        <table class="table">
+            <tr>
+                <th>
+                    <span>Char Name</span>
+                </th>
+                <th>
+                    <span>Details</span>
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr class="divs">
+                    <td class="cls" @item.ID>
+                        @Html.DisplayFor(modelItem => item.CName)
+                    </td>
+                    <td>
+                        <a href="javascript:void(0);" onclick="CharDetails('@item.ID')">Details</a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+    <div class="row">
+        <div class="divs col-md-12">
+            @foreach (var item in Model)
+            {
+            <div class="cls1 jumbotron">
+                <h1 class="text-center" style="color:green">Char Details</h1>
+                <h2 class="text-center text-danger" id="msg">
+                    
+                </h2>
+
+                <span>
+                    <h2 class="text-center text-danger" id="btnnext">
+                        @Html.DisplayFor(modelItem => item.CDes)
+
+                    </h2>
+                </span>
+                
+            </div>
+            }
+            <a id="next" class="next">next</a>
+            <a id="prev" class="previous">prev</a>
+        </div>
+    </div>
+        
+        
+   
+   
+</div>
+<hr />
+
+
+<script>
+    function CharDetails(eId) {
+            var data = {
+                id: eId
+            };
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("Descshow", "Home")',
+                type: 'POST',
+                data: JSON.stringify({ id: eId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                success: function (data) {
+                    debugger
+                    document.getElementById("msg").innerHTML = data;                
+                },
+                error: function (data) {
+                }
+            });
+    }
+   
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".divs div").each(function (e) {
+            debugger
+            if (e != 0)
+                $(this).hide();
+        });
+        $("#next").click(function () {
+            debugger
+            if ($(".divs div:visible").next().length != 0)
+                $(".divs div:visible").next().show().prev().hide();
+            else {
+                $(".divs div:visible").hide();
+                $(".divs div:first").show();
+            }
+            return false;
+        });
+
+        $("#prev").click(function () {
+            if ($(".divs div:visible").prev().length != 0)
+                $(".divs div:visible").prev().show().next().hide();
+            else {
+                $(".divs div:visible").hide();
+                $(".divs div:last").show();
+            }
+            return false;
+        });
+    });
+</script>
